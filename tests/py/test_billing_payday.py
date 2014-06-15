@@ -749,6 +749,7 @@ class TestBillingTransfer(PaydayHarness):
                                            , self.tipper.username
                                            , recipient
                                            , amount
+                                           , 'tip'
                                             )
 
         for subject in subjects:
@@ -769,6 +770,7 @@ class TestBillingTransfer(PaydayHarness):
                                            , 'idontexist'
                                            , 'nori'
                                            , amount
+                                           , 'tip'
                                             )
 
     def test_record_credit_updates_balance(self):

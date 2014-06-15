@@ -371,12 +371,12 @@ class Payday(object):
                , our_tips AS (
                      SELECT *
                        FROM our_transfers
-                      WHERE as_team_member IS false
+                      WHERE context='tip'
                  )
                , our_pachinkos AS (
                      SELECT *
                        FROM our_transfers
-                      WHERE as_team_member IS true
+                      WHERE context='take'
                  )
                , our_exchanges AS (
                      SELECT *
@@ -523,7 +523,8 @@ class Payday(object):
                 return False
 
             self.credit_participant(cursor, tippee, amount)
-            self.record_transfer(cursor, tipper, tippee, amount, pachinko)
+            context = 'take' if pachinko else 'tip'
+            self.record_transfer(cursor, tipper, tippee, amount, context)
 
             return True
 
@@ -865,14 +866,14 @@ class Payday(object):
             return balance
 
 
-    def record_transfer(self, cursor, tipper, tippee, amount, as_team_member=False):
+    def record_transfer(self, cursor, tipper, tippee, amount, context):
         cursor.run("""\
 
           INSERT INTO transfers
-                      (tipper, tippee, amount, as_team_member)
+                      (tipper, tippee, amount, context)
                VALUES (%s, %s, %s, %s)
 
-        """, (tipper, tippee, amount, as_team_member))
+        """, (tipper, tippee, amount, context))
 
 
     def mark_missing_funding(self):
